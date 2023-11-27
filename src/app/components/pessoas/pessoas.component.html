@@ -1,0 +1,152 @@
+<!-- Novo Cadastro -->
+<div class="container p-5" *ngIf="visibilidadeTabela">
+  <div class="border border-light rounded p-5 shadow">
+    <button type="button" class="btn btn-sm btn-secondary" (click)="ExibirFormularioCadastro()">Nova Pessoa</button>
+
+  <hr/>
+
+  <table class="table table-striped table-hover table-sm" *ngIf="pessoas">
+    <tr class="thead-light">
+      <th>Nome</th>
+      <th>Sobrenome</th>
+      <th>Idade</th>
+      <th>Profissão</th>
+      <th>Ações</th>
+    </tr>
+
+    <tr *ngFor="let pessoa of pessoas">
+      <td>{{pessoa.nome}}</td>
+      <td>{{pessoa.sobrenome}}</td>
+      <td>{{pessoa.idade}}</td>
+      <td>{{pessoa.profissao}}</td>
+      <td>
+        <button type="button" class="btn btn-sm btn-outline-info" (click)="ExibirTabelaTarefas(pessoa.pessoaId)">Tarefas</button>
+        <button type="button" class="btn btn-sm btn-outline-info" (click)="ExibirFormularioAtualizacao(pessoa.pessoaId)">Atualizar</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="ExibirConfirmacaoExclusao(pessoa.pessoaId, pessoa.nome, conteudoModal)">Excluir</button>
+      </td>
+    </tr>
+
+  </table>
+</div>
+</div>
+
+<!-- Formulario -->
+<div class="container p-5" *ngIf="visibilidadeFormulario">
+  <div class="row">
+    <div class="col-6 border border-ligth rounded p-5 shadow" *ngIf="formulario">
+      <h6>{{tituloFormulario}}</h6>
+      <hr/>
+      <form [formGroup]="formulario" (ngSubmit)="EnviarFormulario()">
+        <div class="form-group">
+          <label>Nome</label>
+          <input type="text" class="form-control form-control-sm" formControlName="nome"/>
+        </div>
+
+        <div class="form-group">
+          <label>Sobrenome</label>
+          <input type="text" class="form-control form-control-sm" formControlName="sobrenome"/>
+        </div>
+
+        <div class="form-group">
+          <label>Idade</label>
+          <input type="number" class="form-control form-control-sm" formControlName="idade"/>
+        </div>
+
+        <div class="form-group">
+          <label>Profissão</label>
+          <input type="text" class="form-control form-control-sm" formControlName="profissao"/>
+        </div>
+
+        <div class="container">
+          <div class="row">
+            <div>
+              <button type="submit" class="btn btn-sm btn-outline-secondary">Salvar</button>
+            </div>
+            <div class="pl-1">
+              <button type="button" class="btn btn-sm btn-ligth" (click)="Voltar()">Voltar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Tabela Tarefas -->
+<div class="container p-5" *ngIf="visibilidadeTabelaTarefas">
+  <div class="border border-light rounded p-5 shadow">
+    <button type="button" class="btn btn-sm btn-secondary" (click)="ExibirFormularioCadastroTarefas() ">Nova Tarefa</button>
+    <button type="button" class="btn btn-sm btn-secondary" (click)="Voltar() ">Voltar</button>
+
+  <hr/>
+
+  <table class="table table-striped table-hover table-sm" *ngIf="tarefas">
+    <tr class="thead-light">
+      <th>Nome Tarefa</th>
+      <th>Descrição</th>
+      <th>Ações</th>
+    </tr>
+
+    <tr *ngFor="let tarefa of tarefasDaPessoa">
+      <td>{{tarefa.nomeTarefa}}</td>
+      <td>{{tarefa.descricao}}</td>
+      <td>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="ExcluirTarefa(pessoaId, tarefa.tarefaId)">Excluir</button>
+      </td>
+    </tr>
+
+  </table>
+</div>
+</div>
+
+<!-- Formulario Tarefa -->
+
+<div class="container p-5" *ngIf="visibilidadeFormularioTarefas">
+  <div class="row">
+    <div class="col-6 border border-ligth rounded p-5 shadow" *ngIf="formularioTarefas">
+      <h6>{{tituloFormularioTarefa}}</h6>
+      <hr/>
+      <form [formGroup]="formularioTarefas" (ngSubmit)="EnviarFormularioTarefas()">
+        <div class="form-group">
+          <label>Nome Tarefa</label>
+          <input type="text" class="form-control form-control-sm" formControlName="nomeTarefa"/>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição</label>
+          <input type="text" class="form-control form-control-sm" formControlName="descricao"/>
+        </div>
+
+        <div class="container">
+          <div class="row">
+            <div>
+              <button type="submit" class="btn btn-sm btn-outline-secondary">Salvar</button>
+            </div>
+            <div class="pl-1">
+              <button type="button" class="btn btn-sm btn-ligth" (click)="Voltar()">Voltar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal / Alerta de confirmação de Exclusão -->
+<ng-template #conteudoModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Confirmação de Exclusão</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Prosseguir com a exclusão do(a) {{nomePessoa}}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-ligth" (click)="modalRef.hide()">Não</button>
+    <button type="button" class="btn btn-outline-danger"  (click)="ExcluirPessoa(pessoaId)">Sim</button>
+  </div>
+</ng-template>
+
